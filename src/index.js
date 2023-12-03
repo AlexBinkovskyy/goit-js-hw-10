@@ -1,16 +1,5 @@
-import axios from 'axios';
-const MAIN_KEY =
-  'live_VRMdp0bWbeOrrNl6pew4MxIkbQ3yK2ufGeK2s0xbqs98EkMkG9wFzO4zuPZmNuST';
-axios.defaults.headers.common['x-api-key'] = MAIN_KEY;
-const MAIN_URL = 'https://api.thecatapi.com/v1';
-const END_POINT = '/breeds';
-
-const instance = axios.create({
-  baseURL: MAIN_URL,
-});
-
-params: {
-}
+import { fetchBreeds } from './cat-api';
+import { fetchCatByBreed } from './cat-api';
 
 const select = document.querySelector('.breed-select');
 select.addEventListener('change', selectOnChange);
@@ -21,18 +10,28 @@ loader.hidden = true;
 error.hidden = true;
 select.style.width = '200px';
 
-import { fetchBreeds } from './cat-api';
-
-function createLayout(response) {
-  return response
-    .map(({ id, name }) => {
-      return `<option value="${id}" class="js-option">${name}</option>`;
-    })
-    .join('');
+function createLayoutSelect(response) {
+  const options = response.map(({ id, name }) => {
+    return `<option value="${id}" class="js-option">${name}</option>`;
+  });
+  options.unshift(
+    '<option value="" disabled selected>Оберіть породу кішки...</option>'
+  );
+  return (select.innerHTML = options.join(''));
 }
-
-
+fetchBreeds()
+  .then(response => createLayoutSelect(response))
+  .catch(err => console.log(err));
 
 function selectOnChange(event) {
-  console.log(event);
+  if (event.target.value) {
+    select.firstChild.remove();
+  }
+  fetchCatByBreed(event.target.value).then(response =>
+    createLayoutInfo(response)
+  ).catch(err => console.log(err))
+}
+
+function createLayoutInfo(response) {
+  console.log(response);
 }
