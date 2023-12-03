@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { reject } from 'lodash';
 const MAIN_KEY =
   'live_VRMdp0bWbeOrrNl6pew4MxIkbQ3yK2ufGeK2s0xbqs98EkMkG9wFzO4zuPZmNuST';
 axios.defaults.headers.common['x-api-key'] = MAIN_KEY;
@@ -18,7 +19,7 @@ export function fetchBreeds() {
       }
     })
     .catch(err => {
-      console.log(err);
+      return err;
     });
 }
 

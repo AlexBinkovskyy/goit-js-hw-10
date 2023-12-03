@@ -20,15 +20,25 @@ function createLayoutSelect(response) {
   return (select.innerHTML = options.join(''));
 }
 fetchBreeds()
-  .then(response => createLayoutSelect(response))
-  .catch(err => console.log(err));
+  .then(response => {
+    loader.hidden = true;
+    createLayoutSelect(response);
+  })
+  .catch(() => {
+    error.hidden = false;
+    select.hidden = true;
+  });
 
 function selectOnChange(event) {
+  error.hidden = true;
   if (event.target.value) {
     select.firstChild.remove();
+    loader.hidden = false;
+    catInfo.innerHTML = '';
   }
   fetchCatByBreed(event.target.value)
     .then(response => {
+      loader.hidden = true;
       catInfo.innerHTML = createLayoutInfo(response);
     })
     .catch(err => console.log(err));
