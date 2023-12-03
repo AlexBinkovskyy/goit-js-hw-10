@@ -29,7 +29,7 @@ function selectOnChange(event) {
   }
   fetchCatByBreed(event.target.value)
     .then(response => {
-      catInfo.insertAdjacentHTML('afterbegin', createLayoutInfo(response));
+      catInfo.innerHTML = createLayoutInfo(response);
     })
     .catch(err => console.log(err));
 }
@@ -39,9 +39,9 @@ function createLayoutInfo(response) {
   return response[0].breeds
     .map(({ name, description, temperament }) => {
       return `<img src="${url}" alt="${name}" width="500px"/>
-      <h2>${name}</h2>
+      <div class="wrapper"><h2>${name}</h2>
       <p>${description}</p>
-      <p><span>Temperament: </span>${temperament}</p>`;
+      <p><span>Temperament: </span>${temperament}</p></div>`;
     })
     .join('');
 }
