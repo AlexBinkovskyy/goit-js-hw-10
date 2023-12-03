@@ -27,11 +27,21 @@ function selectOnChange(event) {
   if (event.target.value) {
     select.firstChild.remove();
   }
-  fetchCatByBreed(event.target.value).then(response =>
-    createLayoutInfo(response)
-  ).catch(err => console.log(err))
+  fetchCatByBreed(event.target.value)
+    .then(response => {
+      catInfo.insertAdjacentHTML('afterbegin', createLayoutInfo(response));
+    })
+    .catch(err => console.log(err));
 }
 
 function createLayoutInfo(response) {
-  console.log(response);
+  const url = response[0].url;
+  return response[0].breeds
+    .map(({ name, description, temperament }) => {
+      return `<img src="${url}" alt="${name}" width="500px"/>
+      <h2>${name}</h2>
+      <p>${description}</p>
+      <p><span>Temperament: </span>${temperament}</p>`;
+    })
+    .join('');
 }

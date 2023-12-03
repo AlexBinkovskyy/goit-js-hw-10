@@ -23,7 +23,6 @@ export function fetchBreeds() {
 }
 
 export function fetchCatByBreed(breedId) {
-  console.log(breedId);
   return axios
     .get(`${MAIN_URL}${END_POINT_INFO}?breed_ids=${breedId}`)
     .then(response => {
