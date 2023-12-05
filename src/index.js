@@ -6,7 +6,7 @@ select.addEventListener('change', selectOnChange);
 const loader = document.querySelector('.loader');
 const error = document.querySelector('.error');
 const catInfo = document.querySelector('.cat-info');
-loader.hidden = true;
+loader.hidden = false;
 error.hidden = true;
 select.style.width = '200px';
 
@@ -19,6 +19,7 @@ function createLayoutSelect(response) {
   );
   return (select.innerHTML = options.join(''));
 }
+
 fetchBreeds()
   .then(response => {
     loader.hidden = true;
@@ -39,19 +40,28 @@ function selectOnChange(event) {
   fetchCatByBreed(event.target.value)
     .then(response => {
       loader.hidden = true;
-      catInfo.innerHTML = createLayoutInfo(response);
+      catInfo.innerHTML =
+        createLayoutInfo(response) ?? (catInfo.innerHTML = '');
     })
-    .catch(err => console.log(err));
+    .catch(() => {
+      error.hidden = false;
+      select.hidden = true;
+    });
 }
 
 function createLayoutInfo(response) {
-  const url = response[0].url;
-  return response[0].breeds
-    .map(({ name, description, temperament }) => {
-      return `<img src="${url}" alt="${name}" width="500px"/>
-      <div class="wrapper"><h2>${name}</h2>
-      <p>${description}</p>
-      <p><span>Temperament: </span>${temperament}</p></div>`;
-    })
-    .join('');
+  if (response.length) {
+    const url = response[0].url;
+    return response[0].breeds
+      .map(({ name, description, temperament }) => {
+        return `<img src="${url}" alt="${name}" width="500px"/>
+        <div class="wrapper"><h2>${name}</h2>
+        <p>${description}</p>
+        <p><span>Temperament: </span>${temperament}</p></div>`;
+      })
+      .join('');
+  } else {
+    error.hidden = false;
+    select.hidden = true;
+  }
 }
